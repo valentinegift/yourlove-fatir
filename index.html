@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- gatau hari apa Placeholder untuk judul -->
+    <title>gatau hari apa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Chewy', cursive;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #F7EEED;
+            background-image: url('https://files.catbox.moe/80awx1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #5a3a4a;
+            touch-action: pan-y;
+        }
+
+        :root {
+            --color-1: #F7EEED;
+            --color-2: #FAE6E7;
+            --color-3: #F7D1D8;
+            --color-4: #F4BBC9;
+            --color-5: #F6A6BB;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .section.active {
+            display: flex;
+        }
+
+        .content-box {
+            background: rgba(247, 238, 237, 0.95);
+            border-radius: 30px;
+            padding: 30px 25px;
+            box-shadow: 0 15px 35px rgba(186, 138, 151, 0.4);
+            border: 8px solid var(--color-2);
+            width: 100%;
+            backdrop-filter: blur(3px);
+        }
+
+        h1, h2 {
+            color: #d36d8c;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 0px rgba(250, 230, 231, 0.8);
+            line-height: 1.3;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #e87a9d;
+        }
+
+        p {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            color: #7a5566;
+        }
+
+        .btn {
+            background: linear-gradient(to bottom, var(--color-4), var(--color-5));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.4rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 8px 15px rgba(214, 150, 169, 0.4);
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(214, 150, 169, 0.5);
+            background: linear-gradient(to bottom, var(--color-5), var(--color-4));
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .wheel-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 320px;
+            height: 180px;
+            margin: 30px 0 20px 0;
+            overflow: hidden;
+            border-radius: 15px;
+            background: rgba(247, 209, 216, 0.2);
+            border: 4px solid var(--color-3);
+        }
+
+        .wheel-track {
+            display: flex;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .wheel-item {
+            min-width: 120px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            flex-shrink: 0;
+        }
+
+        .wheel-item img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: block;
+            background: var(--color-3);
+        }
+
+        .wheel-item.selected img {
+            border: 5px solid #e63946;
+            box-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
+            transform: scale(1.1);
+            animation: pulse 0.5s 3;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+        }
+
+        .wheel-item span {
+            font-size: 1.1rem;
+            color: #7a5566;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 25px;
+            z-index: 100;
+        }
+
+        .wheel-pointer svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
+        }
+
+        .spin-btn-container {
+            margin-top: 15px;
+        }
+
+        .name-display {
+            font-size: 1.8rem;
+            color: #d36d8c;
+            margin: 15px 0;
+            min-height: 50px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            background: rgba(250, 230, 231, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 3px solid var(--color-3);
+        }
+
+        .game-container {
+            width: 100%;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            background: rgba(247, 209, 216, 0.3);
+            border: 5px solid var(--color-3);
+            margin: 20px 0;
+        }
+
+        .kitty {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+            z-index: 10;
+        }
+
+        .kitty img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .kitty.caught {
+            animation: caughtAnimation 0.5s forwards;
+        }
+
+        @keyframes caughtAnimation {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .counter {
+            font-size: 2rem;
+            color: #d36d8c;
+            margin: 20px 0;
+            background: rgba(250, 230, 231, 0.95);
+            padding: 10px 30px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(214, 150, 169, 0.3);
+            border: 3px solid var(--color-3);
+        }
+
+        .letter {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px 0;
+            text-align: left;
+            max-width: 100%;
+            border-left: 8px solid var(--color-5);
+            box-shadow: 0 8px 20px rgba(214, 150, 169, 0.2);
+            border: 3px solid var(--color-2);
+        }
+
+        .letter p {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #7a5566;
+            line-height: 1.6;
+        }
+
+        .signature {
+            text-align: right;
+            font-size: 1.5rem;
+            color: #d36d8c;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .spotify-container {
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+            border: 3px solid var(--color-3);
+        }
+
+        .congrats {
+            font-size: 2.5rem;
+            color: #d36d8c;
+            margin: 20px 0;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .content-box {
+                padding: 20px 15px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            p {
+                font-size: 1.1rem;
+            }
+            .wheel-wrapper {
+                width: 280px;
+                height: 160px;
+            }
+            .wheel-item img {
+                width: 80px;
+                height: 80px;
+            }
+            .game-container {
+                height: 300px;
+            }
+            .kitty {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Section 1: Welcome -->
+        <section class="section active" id="section1">
+            <div class="content-box">
+                <h1 id="welcomeTitle">Hi, MY LOVE ARUMI</h1>
+                <p>welcome, this won't take long</p>
+                <button class="btn" id="nextBtn1">next</button>
+            </div>
+        </section>
+
+        <!-- Section 2: Wheel Horizontal -->
+        <section class="section" id="section2">
+            <div class="content-box">
+                <h2>who's your valentine?</h2>
+                <div class="wheel-container">
+                    <div class="name-display" id="wheelName">Click SPIN to start!</div>
+                    <div class="wheel-wrapper">
+                        <div class="wheel-pointer">
+                            <svg viewBox="0 0 100 60">
+                                <polygon points="50,0 65,40 35,40" fill="#e63946"/>
+                            </svg>
+                        </div>
+                        <div class="wheel-track" id="wheelTrack"></div>
+                    </div>
+                    <div class="spin-btn-container">
+                        <button class="btn" id="spinBtn">
+                            <i class="fas fa-redo-alt"></i> SPIN
+                        </button>
+                    </div>
+                </div>
+                <button class="btn" id="nextBtn2" disabled>next</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Surprise -->
+        <section class="section" id="section3">
+            <div class="content-box">
+                <h2>I have a surprise for you</h2>
+                <p>ready for that??</p>
+                <button class="btn" id="nextBtn3">i'm ready</button>
+            </div>
+        </section>
+
+        <!-- Section 4: Catch the Kitty -->
+        <section class="section" id="section4">
+            <div class="content-box">
+                <h2>Catch the kitty 10× for opened the surprise</h2>
+                <div class="counter">
+                    <span id="score">0</span> / 10
+                </div>
+                <div class="game-container" id="gameContainer"></div>
+                <div class="congrats" id="congratsText">congrats! you finished it</div>
+                <button class="btn" id="nextBtn4" disabled>next</button>
+            </div>
+        </section>
+
+        <!-- Section 5: Valentine Letter -->
+        <section class="section" id="section5">
+            <div class="content-box">
+                <h2>For You My Love</h2>
+                <div class="letter">
+                    dewa 19 KANGEN
+                </div>
+                <button class="btn" id="nextBtn5">next</button>
+            </div>
+        </section>
+
+        <!-- Section 6: Spotify Playlist -->
+        <section class="section" id="section6">
+            <div class="content-box">
+                <h2>here's my valentine song</h2>
+                <div class="spotify-container">
+                    
+        <iframe style="border-radius:12px" 
+                src="https://open.spotify.com/embed/track/6VggIDYOnf9C8fJVcMpxAu" 
+                width="100%" 
+                height="380" 
+                frameBorder="0" 
+                allowfullscreen="" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy">
+        </iframe>
+        
+                </div>
+                <button class="btn" id="restartBtn">Start Over</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // DOM Elements
+        const sections = document.querySelectorAll('.section');
+        const wheelTrack = document.getElementById('wheelTrack');
+        const wheelName = document.getElementById('wheelName');
+        const gameContainer = document.getElementById('gameContainer');
+        const scoreElement = document.getElementById('score');
+        const congratsText = document.getElementById('congratsText');
+        const welcomeTitle = document.getElementById('welcomeTitle');
+        
+        // Buttons
+        const nextBtn1 = document.getElementById('nextBtn1');
+        const nextBtn2 = document.getElementById('nextBtn2');
+        const nextBtn3 = document.getElementById('nextBtn3');
+        const nextBtn4 = document.getElementById('nextBtn4');
+        const nextBtn5 = document.getElementById('nextBtn5');
+        const restartBtn = document.getElementById('restartBtn');
+        const spinBtn = document.getElementById('spinBtn');
+        
+        // Game variables
+        let currentSection = 0;
+        let score = 0;
+        let isSpinning = false;
+        let gameInterval;
+        let kitties = [];
+        
+        // Profile images - [PHOTO] AKAN DIGANTI PYTHON
+        const profileImages = [
+            'https://files.catbox.moe/cc38vb.jpg',
+            'https://files.catbox.moe/rulct5.jpg', 
+            'https://files.catbox.moe/wdp0ck.jpg',
+            'https://files.catbox.moe/7kuaxg.jpg',
+            'images/photo_7457447696_1774359104.jpg',
+            'https://files.catbox.moe/cc38vb.jpg',
+            'https://files.catbox.moe/rulct5.jpg',
+            'https://files.catbox.moe/wdp0ck.jpg'
+        ];
+        
+        const profileNames = [
+            'Friend 1',
+            'Friend 2', 
+            'Friend 3',
+            'Friend 4',
+            'ME',
+            'Friend 5',
+            'Friend 6',
+            'Friend 7'
+        ];
+        
+        const kittyImage = 'https://files.catbox.moe/mb106k.png';
+        
+        function init() {
+            // Ganti title
+            const titleElement = document.querySelector('title');
+            if (titleElement && titleElement.textContent.includes('gatau hari apa')) {
+                titleElement.textContent = titleElement.textContent.replace('gatau hari apa', 'gatau hari apa');
+            }
+            
+            // Ganti name
+            if (welcomeTitle && welcomeTitle.textContent.includes('MY LOVE ARUMI')) {
+                welcomeTitle.textContent = welcomeTitle.textContent.replace('MY LOVE ARUMI', 'MY LOVE ARUMI');
+            }
+            
+            initWheel();
+            setupEventListeners();
+        }
+        
+        function initWheel() {
+            if (!wheelTrack) return;
+            
+            wheelTrack.innerHTML = '';
+            
+            const totalItems = 40;
+            const itemWidth = 120;
+            
+            for (let i = 0; i < totalItems; i++) {
+                const item = document.createElement('div');
+                item.className = 'wheel-item';
+                
+                const imgIndex = i % profileImages.length;
+                const imgSrc = profileImages[imgIndex];
+                
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.alt = profileNames[imgIndex];
+                img.onerror = function() {
+                    this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%23F7D1D8"/><text x="50" y="55" text-anchor="middle" fill="%235a3a4a" font-size="30">' + profileNames[imgIndex].charAt(0) + '</text></svg>';
+                };
+                
+                const name = document.createElement('span');
+                name.textContent = profileNames[imgIndex];
+                
+                item.appendChild(img);
+                item.appendChild(name);
+                wheelTrack.appendChild(item);
+            }
+            
+            centerOnMe();
+        }
+        
+        function centerOnMe() {
+            if (!wheelTrack.children.length) return;
+            
+            const containerWidth = document.querySelector('.wheel-wrapper')?.clientWidth || 320;
+            const itemWidth = 120;
+            
+            const meIndex = Math.floor(wheelTrack.children.length / 2);
+            const adjustedIndex = meIndex - (meIndex % profileImages.length) + 4;
+            
+            const targetPosition = adjustedIndex * itemWidth - (containerWidth / 2) + (itemWidth / 2);
+            wheelTrack.style.transform = `translateX(-${targetPosition}px)`;
+            
+            const meItem = wheelTrack.children[adjustedIndex];
+            if (meItem) {
+                meItem.classList.add('selected');
+            }
+        }
+        
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinBtn.disabled = true;
+            nextBtn2.disabled = true;
+            wheelName.textContent = "Spinning...";
+            
+            document.querySelectorAll('.wheel-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            const trackWidth = wheelTrack.scrollWidth;
+            const containerWidth = document.querySelector('.wheel-wrapper')?.clientWidth || 320;
+            const itemWidth = 120;
+            
+            const meIndex = Math.floor(wheelTrack.children.length / 2);
+            const adjustedIndex = meIndex - (meIndex % profileImages.length) + 4;
+            const targetPosition = adjustedIndex * itemWidth - (containerWidth / 2) + (itemWidth / 2);
+            
+            let startTime = Date.now();
+            const totalDuration = 4000;
+            
+            let speed = 1500;
+            let currentPos = 0;
+            let direction = 1;
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / totalDuration;
+                
+                if (progress < 1) {
+                    if (progress > 0.7) {
+                        speed = Math.max(300, speed * 0.95);
+                    } else if (progress > 0.4) {
+                        speed = 800;
+                    }
+                    
+                    currentPos += (speed * direction) / 60;
+                    
+                    if (currentPos > trackWidth * 0.3) {
+                        direction = -1;
+                    } else if (currentPos < -trackWidth * 0.3) {
+                        direction = 1;
+                    }
+                    
+                    wheelTrack.style.transform = `translateX(${currentPos}px)`;
+                    requestAnimationFrame(animate);
+                } else {
+                    wheelTrack.style.transform = `translateX(-${targetPosition}px)`;
+                    
+                    const meItem = wheelTrack.children[adjustedIndex];
+                    if (meItem) {
+                        meItem.classList.add('selected');
+                    }
+                    
+                    wheelName.innerHTML = '<span style="color:#e63946; font-size:2.5rem;">🎉 ME! ❤️ 🎉</span>';
+                    
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    nextBtn2.disabled = false;
+                    
+                    setTimeout(() => {
+                        wheelName.innerHTML = '<span style="color:#e63946; font-size:2rem;">im your Valentine!</span>';
+                    }, 1000);
+                }
+            }
+            
+            let nameIndex = 0;
+            const nameInterval = setInterval(() => {
+                if (!isSpinning) {
+                    clearInterval(nameInterval);
+                    return;
+                }
+                
+                const names = ['Friend 1', 'Friend 2', 'Friend 3', 'Friend 4', 'ME!', 'Friend 5', 'Friend 6'];
+                wheelName.textContent = names[nameIndex % names.length] + "...";
+                nameIndex++;
+            }, 150);
+            
+            setTimeout(() => {
+                clearInterval(nameInterval);
+            }, totalDuration);
+            
+            requestAnimationFrame(animate);
+        }
+        
+        function initKittyGame() {
+            score = 0;
+            scoreElement.textContent = score;
+            gameContainer.innerHTML = '';
+            congratsText.style.display = 'none';
+            nextBtn4.disabled = true;
+            kitties = [];
+            
+            if (gameInterval) {
+                clearInterval(gameInterval);
+            }
+            
+            gameInterval = setInterval(createFallingKitty, 800);
+            
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createFallingKitty(), i * 300);
+            }
+        }
+        
+        function createFallingKitty() {
+            if (score >= 10) return;
+            
+            const kitty = document.createElement('div');
+            kitty.className = 'kitty';
+            
+            const img = document.createElement('img');
+            img.src = kittyImage;
+            img.alt = 'Cute kitty';
+            kitty.appendChild(img);
+            
+            const maxX = (gameContainer.clientWidth || 300) - 70;
+            const x = Math.random() * maxX;
+            
+            kitty.style.left = `${x}px`;
+            kitty.style.top = '-70px';
+            
+            kitty.addEventListener('click', handleKittyClick);
+            
+            gameContainer.appendChild(kitty);
+            kitties.push(kitty);
+            
+            const fallSpeed = 2 + Math.random() * 3;
+            let positionY = -70;
+            
+            function fall() {
+                positionY += fallSpeed;
+                kitty.style.top = `${positionY}px`;
+                
+                if (positionY > (gameContainer.clientHeight || 300)) {
+                    kitty.remove();
+                    const index = kitties.indexOf(kitty);
+                    if (index > -1) kitties.splice(index, 1);
+                } else if (kitty.parentNode) {
+                    requestAnimationFrame(fall);
+                }
+            }
+            
+            requestAnimationFrame(fall);
+        }
+        
+        function handleKittyClick(e) {
+            if (e.target.closest('.kitty').classList.contains('caught')) return;
+            
+            const kitty = e.target.closest('.kitty');
+            kitty.classList.add('caught');
+            
+            score++;
+            scoreElement.textContent = score;
+            
+            setTimeout(() => {
+                if (kitty.parentNode) {
+                    kitty.remove();
+                    const index = kitties.indexOf(kitty);
+                    if (index > -1) kitties.splice(index, 1);
+                }
+            }, 500);
+            
+            if (score >= 10) {
+                clearInterval(gameInterval);
+                congratsText.style.display = 'block';
+                nextBtn4.disabled = false;
+                
+                kitties.forEach(k => {
+                    if (k.parentNode) k.remove();
+                });
+                kitties = [];
+            }
+        }
+        
+        function nextSection() {
+            if (currentSection < sections.length - 1) {
+                sections[currentSection].classList.remove('active');
+                currentSection++;
+                sections[currentSection].classList.add('active');
+                
+                if (currentSection === 3) {
+                    setTimeout(() => initKittyGame(), 300);
+                }
+            }
+        }
+        
+        function restartExperience() {
+            sections[currentSection].classList.remove('active');
+            currentSection = 0;
+            sections[currentSection].classList.add('active');
+            
+            initWheel();
+            wheelName.innerHTML = 'Click SPIN to start!';
+            spinBtn.disabled = false;
+            nextBtn2.disabled = true;
+            
+            if (gameInterval) {
+                clearInterval(gameInterval);
+            }
+        }
+        
+        function setupEventListeners() {
+            nextBtn1.addEventListener('click', nextSection);
+            nextBtn2.addEventListener('click', nextSection);
+            nextBtn3.addEventListener('click', nextSection);
+            nextBtn4.addEventListener('click', nextSection);
+            nextBtn5.addEventListener('click', nextSection);
+            restartBtn.addEventListener('click', restartExperience);
+            spinBtn.addEventListener('click', spinWheel);
+        }
+        
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
